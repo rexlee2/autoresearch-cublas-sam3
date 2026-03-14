@@ -9,3 +9,10 @@ last_result.json
 *.swp
 *.swo
 *~
+
+# Old Triton demo files (root level)
+/kernel.py
+/benchmark.py
+/verify.py
+/program.md
+/run.sh

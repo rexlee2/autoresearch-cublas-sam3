@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+.best_score
+last_result.json
+*.egg-info/
+.env
+*.swp
+*.swo
+*~

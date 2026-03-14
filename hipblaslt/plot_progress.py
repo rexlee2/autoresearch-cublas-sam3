@@ -16,6 +16,7 @@ Usage:
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -23,7 +24,6 @@ try:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    from matplotlib.patches import FancyBboxPatch
     import matplotlib.patheffects as pe
 except ImportError:
     print("ERROR: matplotlib not installed.  Run: pip install matplotlib")
@@ -55,14 +55,12 @@ def shorten_description(desc: str) -> str:
 
     # Workspace
     if "workspace" in d:
-        import re
         m = re.search(r"(\d+)\s*mb", d)
         if m:
             return f"workspace {m.group(1)}MB"
 
     # Transpose B
     if "transpose b" in d or "transpose" in d.lower():
-        import re
         # Extract shape label (e.g. "trk_xattn_qk") or shape tuple
         m = re.search(r"for\s+(\w+)", desc)
         if m:
@@ -72,7 +70,6 @@ def shorten_description(desc: str) -> str:
 
     # Split-K
     if "split-k" in d:
-        import re
         sk = re.search(r"split-k=(\d+)", d, re.IGNORECASE)
         label = re.search(r"for\s+(\w+)", desc)
         if sk and label:
@@ -88,7 +85,6 @@ def shorten_description(desc: str) -> str:
 
     # Batch windows / batch size
     if "window batch size" in d:
-        import re
         m = re.search(r"size\s+(\d+)", d)
         if m:
             return f"batch={m.group(1)} windows"
@@ -97,7 +93,6 @@ def shorten_description(desc: str) -> str:
 
     # Precision
     if "precision" in d:
-        import re
         m = re.search(r'precision[=\s]+"?(\w+)"?', d)
         if m:
             return f"precision={m.group(1)}"
@@ -106,14 +101,13 @@ def shorten_description(desc: str) -> str:
     if "cublas" in d and "cublaslt" not in d:
         # Check if combined with something
         if "transpose" in d:
-            m = __import__("re").search(r"for\s+(\w+)", desc)
+            m = re.search(r"for\s+(\w+)", desc)
             label = m.group(1) if m else ""
             return f"cuBLAS+NT: {label}"
         return "cuBLAS (legacy)"
 
     # Combos — extract the key changes
     if "combo" in d or "+" in desc:
-        import re
         parts = []
         if "bfloat16" in d:
             parts.append("BF16")
@@ -130,7 +124,6 @@ def shorten_description(desc: str) -> str:
 
     # Padding
     if "pad" in d:
-        import re
         m = re.search(r"(\d+)", d)
         if m:
             return f"pad to {m.group(1)}"
